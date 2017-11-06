@@ -1,0 +1,13 @@
+define([
+    'create-react-class'
+], function (CreateReactClass) {
+    'use strict';
+
+            // Our overall **AppView** is the top-level piece of UI.
+     var Test = CreateReactClass({
+         render(){
+             return <h1>Hello</h1>;
+         }
+     });
+    return Test;
+});

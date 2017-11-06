@@ -1,0 +1,45 @@
+define([
+            'jquery',
+            'underscore',
+            'api/SplunkVisualizationBase',
+            'api/SplunkVisualizationUtils',
+            'd3',
+            'react',
+            'react-dom',
+            './jsx/Test'
+        ],
+        function(
+            $,
+            _,
+            SplunkVisualizationBase,
+            SplunkVisualizationUtils,
+            d3,
+            React,
+            ReactDOM,
+            Test
+        ) {
+  
+    return SplunkVisualizationBase.extend({
+ 
+        initialize: function() {
+            // Save this.$el for convenience
+            this.$el = $(this.el);
+             
+            // Add a css selector class
+            this.$el.addClass('splunk-radial-meter');
+        },
+ 
+        getInitialDataParams: function() {
+            return ({
+                outputMode: SplunkVisualizationBase.ROW_MAJOR_OUTPUT_MODE,
+                count: 10000
+            });
+        },
+  
+        updateView: function(data, config) {
+            var test = React.createElement(Test, null);
+            ReactDOM.render(Test, this.$el[0]);
+            console.log("debug");
+        }
+    });
+});

@@ -1,0 +1,143 @@
+define(function() { return /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId])
+/******/ 			return installedModules[moduleId].exports;
+
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			exports: {},
+/******/ 			id: moduleId,
+/******/ 			loaded: false
+/******/ 		};
+
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+
+/******/ 		// Flag the module as loaded
+/******/ 		module.loaded = true;
+
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+
+
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(0);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports) {
+
+	import $ from 'jquery';
+	import _ from 'underscore';
+	import SplunkVisualizationBase from 'api/SplunkVisualizationBase';
+	import SplunkVisualizationUtils from 'api/SplunkVisualizationUtils';
+	import d3 from 'd3';
+	  
+	    export default SplunkVisualizationBase.extend({
+	 
+	        initialize: function() {
+	            // Save this.$el for convenience
+	            this.$el = $(this.el);
+	             
+	            // Add a css selector class
+	            this.$el.addClass('splunk-radial-meter');
+	        },
+	 
+	        getInitialDataParams: function() {
+	            return ({
+	                outputMode: SplunkVisualizationBase.ROW_MAJOR_OUTPUT_MODE,
+	                count: 10000
+	            });
+	        },
+	  
+	        updateView: function(data, config) {
+	             
+	            // Guard for empty data
+	            if(data.rows.length < 1){
+	                return;
+	            }
+	            // Take the first data point
+	            datum = data.rows[0][0];
+	            // Clear the div
+	            this.$el.empty();
+	  
+	            // Pick a color for now
+	            var mainColor = 'green';
+	            // Set domain max
+	            var maxValue = 100;
+	  
+	            // Set height and width
+	            var height = 220;
+	            var width = 220;
+	  
+	            // Create a radial scale representing part of a circle
+	            var scale = d3.scale.linear()
+	                .domain([0, maxValue])
+	                .range([ - Math.PI * .75, Math.PI * .75])
+	                .clamp(true);
+	  
+	            // Create parameterized arc definition
+	            var arc = d3.svg.arc()
+	                .startAngle(function(d){
+	                    return scale(0);
+	                })
+	                .endAngle(function(d){
+	                    return scale(d)
+	                })
+	                .innerRadius(70)
+	                .outerRadius(85);
+	  
+	            // SVG setup
+	            var svg  = d3.select(this.el).append('svg')
+	                .attr('width', width)
+	                .attr('height', height)
+	                .style('background', 'white')
+	                .append('g')
+	                .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
+	  
+	            // Background arc
+	            svg.append('path')
+	                .datum(maxValue)
+	                .attr('d', arc)
+	                .style('fill', 'lightgray');
+	  
+	            // Fill arc
+	            svg.append('path')
+	                .datum(datum)
+	                .attr('d', arc)
+	                .style('fill', mainColor);
+	  
+	            // Text
+	            svg.append('text')
+	                .datum(datum)
+	                .attr('class', 'meter-center-text')
+	                .style('text-anchor', 'middle')
+	                .style('fill', mainColor)
+	                .text(function(d){
+	                    return parseFloat(d);
+	                })
+	                .attr('transform', 'translate(' + 0 + ',' + 20 + ')');
+	        }
+	    });
+
+
+
+/***/ })
+/******/ ])});;
